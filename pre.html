@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>JAVACRIPAT EXAM</title>
+    <style>
+        body 
+        {
+            font-family: Arial;
+            text-align: center;
+        }
+        .option 
+        {
+            display: block;
+            margin: 10px auto;
+            width: 200px;
+            padding: 10px;
+        }
+        .correct 
+        {
+            background: green;
+        }
+        .wrong 
+        {
+            background: red;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>JAVASCRIPAT MCQ QUIZ</h2>
+
+    <h3 id="timer">Time Left: 30</h3>
+
+    <div id="quiz"></div>
+
+    <br>
+    <button onclick="previousQuestion()">Previous</button>
+    <button onclick="nextQuestion()">Next</button>
+
+    <script>
+
+        var questions = [
+            {
+                q: " Who is devlop javascripat?",
+                options: ["Brendan Eich", "Bjarne Stroustrup", "Dennis Ritchie", "Sir Tim Berners-Lee"],
+                answer: 0
+            },
+            {
+                q: " Which year devlop JavaScript ?",
+                options: ["1979", "1998", "1995", "1980"],
+                answer: 2
+            },
+            {
+                q: " JavaScript kis tag ke andar likha jata hai ?",
+                options: ["html", "body", "javascript", "script"],
+                answer: 3
+            },
+            {
+                q: " Which of the following is correct about JavaScrip ?",
+                options: ["JavaScript is an Object-Based language","JavaScript is Assembly-language","JavaScript is an Object-Oriented language",
+                          "JavaScript is a High-level language"],
+                answer: 1
+            }
+        ];
+
+        var current = 0;
+        var score = 0;
+        var answers = [];
+        var time = 30;
+        var timer;
+
+        function loadQuestion() 
+        {
+            clearInterval(timer);
+            time = 30;
+            document.getElementById("timer").innerHTML = "Time Left: " + time;
+
+            timer = setInterval(() => 
+            {
+                time--;
+                document.getElementById("timer").innerHTML = "Time Left: " + time;
+
+                if (time <= 0) 
+                {
+                    clearInterval(timer);
+
+                    var btns =
+                        document.querySelectorAll(".option");
+
+                    btns.forEach(btn => 
+                    {
+                        btn.disabled = true;
+                    });
+                }
+            }, 1000);
+
+            var q = questions[current];
+
+            var html = `<h3>${current + 1}. ${q.q}</h3>`;
+
+            q.options.forEach((opt, index) => 
+            {
+                html += `
+                <button class="option" onclick="checkAnswer(${index},this)">${opt}</button>`;
+            });
+
+            document.getElementById("quiz").innerHTML = html;
+        }
+
+        function checkAnswer(index, btn) 
+        {
+
+            var correct = questions[current].answer;
+
+            var buttons =
+                document.querySelectorAll(".option");
+
+            buttons.forEach(b => b.disabled = true);
+
+            if (index == correct) 
+            {
+                btn.classList.add("correct");
+                if (answers[current] == undefined) 
+                {
+                    score++;
+                }
+            } 
+            else 
+            {
+                btn.classList.add("wrong");
+                buttons[correct].classList.add("correct");
+            }
+
+            answers[current] = index;
+        }
+
+        function nextQuestion() 
+        {
+            if (current < questions.length - 1) 
+            {
+                current++;
+                loadQuestion();
+            } 
+            else 
+            {
+                showScore();
+            }
+        }
+
+        function previousQuestion() 
+        {
+            if (current > 0) 
+            {
+                current--;
+                loadQuestion();
+            }
+        }
+
+        function showScore() 
+        {
+
+            clearInterval(timer);
+
+            document.body.innerHTML = `
+            <h1>Quiz Finished</h1>
+            <h2>Your Score: ${score} / ${questions.length}</h2>
+            `;      
+        }
+        loadQuestion();
+    </script>
+</body>
+</html>
